@@ -1,0 +1,28 @@
+
+.intro {
+  margin: 30px;
+  text-align: center;
+}
+
+
+.form-item{
+  border-bottom: 2rpx rgba(255,255,255,.3) solid; 
+  display: flex; 
+  height: 130rpx; line-height: 130rpx; 
+}
+
+.form-item .item-lab{
+  width: 190rpx; 
+  font-size: 36rpx;color:#000;
+}
+.form-item .item-inp{
+  position: relative; width: 410rpx;  font-size: 36rpx; color:#000; 
+}
+.item-inp .picker{
+  display: flex; align-items: center; height: 130rpx; line-height: normal;flex-wrap: nowrap;
+}
+
+
+.item-inp .plac{
+  position: absolute; font-size: 36rpx; color:rgba(255,255,255,.3);pointer-events:none;
+}
