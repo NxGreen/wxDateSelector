@@ -6,21 +6,21 @@ var strHandle = function (array) {
   return _str;
 }
 
-var isHidden = function (_dateIndex){
+var isHidden = function (_dateIndex) {
   if (_dateIndex == "" && _dateIndex != "0") {
     return false;
-  }else{
+  } else {
     return true;
   }
 }
 
 var DateHandle = function (_date, _dateIndex) {
   console.log("----")
-  if(!_dateIndex){ //默认不填，为空
+  if (!_dateIndex) { //默认不填，为空
     return;
   }
-  if (_date&&_date[0]&&_date[0][0]){
-    var len=_dateIndex.length,str="";
+  if (_date && _date[0] && _date[0][0]) {
+    var len = _dateIndex.length, str = "";
     console.log(len)
     // for(var i=0;i<len;i++){
     //   var _a = parseInt(_dateIndex[i]);
@@ -40,11 +40,11 @@ var DateHandle = function (_date, _dateIndex) {
 }
 
 var changeTime = function (str, h) {
-  console.log("changeTime:"+str)
-  if(!str){
-    str="";
+  console.log("changeTime:" + str)
+  if (!str) {
+    str = "";
   }
-  if (str&&str.length == 1) {
+  if (str && str.length == 1) {
     str = "0" + str
   }
   h ? (str += ":00") : str;
@@ -54,5 +54,5 @@ var changeTime = function (str, h) {
 module.exports = {
   strHandle: strHandle,
   DateHandle: DateHandle,
-  isHidden:isHidden
+  isHidden: isHidden
 }

@@ -1,29 +1,29 @@
 Component({
   properties: {
     //eg:[0, 1, 1, 1, 1] 设置单位，元素分别对应设置['year', 'month', 'day', 'hour', 'minute'], 1为需要，0为不需要, 需要为连续的1
-    param:{
+    param: {
       type: Array,
-      value: [1, 1, 1, 1, 1,1]
+      value: [1, 1, 1, 1, 1, 1]
     },
     //eg:[3,27,12,12] 3月27日12点12分 设置开始时间点,空数组默认设置成1900年1月1日0时0分开始，数组的值对应param参数的对应值。
     beginTime: {
       type: Array,
-      value: [1900, 1, 1, 0, 0,0]
+      value: [1900, 1, 1, 0, 0, 0]
     },
     //设置结束时间点, 空数组默认设置成次年12月31日23时59分结束，数组的值对应param参数的对应值
     endTime: {
       type: Array,
-      value: [1, 1, 1, 1, 1,1]
+      value: [1, 1, 1, 1, 1, 1]
     },
     //设置当前时间点,空数组默认设置为系统当前时间，数组的值对应param参数的对应值。
     recentTime: {
       type: Array,
-      value: [0,0,0,0,0,0]
+      value: [0, 0, 0, 0, 0, 0]
     }
   },
   data: {
     // 这里是一些组件内部数据  通过 recentTime 和 beginTime 换算出 dateIndex
-    dateIndex: [0, 0, 0, 0, 0,0]
+    dateIndex: [0, 0, 0, 0, 0, 0]
   },
   methods: {
     /**
@@ -34,15 +34,15 @@ Component({
       this.setData({
         dateIndex: e.detail.value
       })
-      var _beginTime=this.data.beginTime,
+      var _beginTime = this.data.beginTime,
         _dateIndex = this.data.dateIndex;
-      var _arr=[
-          _beginTime[0] + _dateIndex[0],
-          _dateIndex[1] + 1,
-          _dateIndex[2] + 1,
-          _dateIndex[3],
-          _dateIndex[4]
-        ];
+      var _arr = [
+        _beginTime[0] + _dateIndex[0],
+        _dateIndex[1] + 1,
+        _dateIndex[2] + 1,
+        _dateIndex[3],
+        _dateIndex[4]
+      ];
       console.log(_arr)
       this.setData({
         recentTime: _arr
@@ -50,7 +50,7 @@ Component({
       //传递给组件外使用
       this.triggerEvent('datechange', _arr)
     },
-    
+
     /**
        * 出生日期 年月日 三级联动 
        */
@@ -58,7 +58,7 @@ Component({
       console.log('修改的列为', e.detail.column, '，值的下标为', e.detail.value);
       var _column = e.detail.column,
         _value = e.detail.value,
-        _year = '',
+        _year = '',_beginTime=this.data.beginTime,_endTime=this.data.endTime,
         that = this;
       var data = {
         date: this.data.date,
@@ -69,6 +69,11 @@ Component({
       if (_column == 0) {  // 年份的变化 
         _year = data.date[0][_value].slice(0, -1);
         data = that.yearSetDate(data, _year);
+        // if(_year==_beginTime[0]){
+          
+        // }else if(_year==_endTime[0]){
+        //   _endTime[1]
+        // }
         data.dateIndex[1] = 0;
         data.dateIndex[2] = 0;
       } else if (_column == 1) {  //月份的变化 
@@ -78,7 +83,7 @@ Component({
       }
       this.setData(data);
 
-      
+
     },
 
     /**
@@ -87,7 +92,7 @@ Component({
     buildArr: function (_star, _end, company) {
       var arr = [];
       var end = Math.max(_star, _end),
-          star=Math.min(_star,_end);
+        star = Math.min(_star, _end);
       for (var i = star; i <= end; i++) {
         arr.push(i + company)
       }
@@ -98,17 +103,14 @@ Component({
      */
     makeDate: function () {
       var arr = [], _date = new Date(),
-          param=this.data.parm,
-          beginTime=this.data.beginTime,
-          endTime=this.data.endTime;
-      // for(var i=0,len=param.length;i<len;i++){
-      //   if(!param[i]){
-
-      //   }
-      // }
+        param = this.data.parm,
+        beginTime = this.data.beginTime,
+        recentTime = this.data.recentTime,
+        endTime = this.data.endTime;
+      
       arr.push(
-        this.buildArr( beginTime[0], endTime[0] , "年"),
-        this.buildArr(1 ,12, "月"),
+        this.buildArr(beginTime[0], endTime[0], "年"),
+        this.buildArr(1, 12, "月"),
         this.buildArr(1, 31, "日"),
         this.buildArr(0, 23, "时"),
         this.buildArr(0, 59, "分"),
@@ -162,14 +164,14 @@ Component({
       return data;
     }
   },
-  
+
 
   /**
    * 生命周期函数--在组件实例进入页面节点树时执行，注意此时不能调用 setData
    */
   created: function () {
     // console.log(this.data.param)
-    
+
   },
 
   /**
@@ -179,15 +181,15 @@ Component({
     var that = this, _beginTime, _recentTime;
     //dateIndex 需做处理 微信value 每一项的值表示选择了 range 对应项中的第几个（下标从 0 开始）
     _beginTime = this.data.beginTime, //[1991,3,2,3,4]    1991年3月2日 3时4分
-    _recentTime = this.data.recentTime;// [1992,5,3,14,20]  1992年5月3日 14时20分 需要转换成 [1, 4, 2, 14, 20]
-    var arr=[
-      _recentTime[0]-  _beginTime[0],
-      _recentTime[1]-1,
-      _recentTime[2]-1,
+      _recentTime = this.data.recentTime;// [1992,5,3,14,20]  1992年5月3日 14时20分 需要转换成 [1, 4, 2, 14, 20]
+    var arr = [
+      _recentTime[0] - _beginTime[0],
+      _recentTime[1] - 1,
+      _recentTime[2] - 1,
       _recentTime[3],
       _recentTime[4]
     ]
-    
+
     this.setData({
       date: that.makeDate(),
       dateIndex: arr
