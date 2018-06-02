@@ -3,29 +3,27 @@ Component({
     //eg:[0, 1, 1, 1, 1] 设置单位，元素分别对应设置['year', 'month', 'day', 'hour', 'minute'], 1为需要，0为不需要, 需要为连续的1
     param:{
       type: Array,
-      value: [1, 1, 1, 1, 1]
+      value: [1, 1, 1, 1, 1,1]
     },
-    //eg:[3,27,12,12] 3月27日12点12分 设置开始时间点,空数组默认设置成1970年1月1日0时0分开始，数组的值对应param参数的对应值。
+    //eg:[3,27,12,12] 3月27日12点12分 设置开始时间点,空数组默认设置成1900年1月1日0时0分开始，数组的值对应param参数的对应值。
     beginTime: {
       type: Array,
-      value: [1, 1, 1, 1, 1]
+      value: [1900, 1, 1, 0, 0,0]
     },
     //设置结束时间点, 空数组默认设置成次年12月31日23时59分结束，数组的值对应param参数的对应值
     endTime: {
       type: Array,
-      value: [1, 1, 1, 1, 1]
+      value: [1, 1, 1, 1, 1,1]
     },
     //设置当前时间点,空数组默认设置为系统当前时间，数组的值对应param参数的对应值。
-    dateIndex: {
+    recentTime: {
       type: Array,
-      value: [0,0,0,0,0]
+      value: [0,0,0,0,0,0]
     }
   },
   data: {
-    // 这里是一些组件内部数据
-    //如果设置 dateIndex 必须要填上数据，不然显示会报错。--- 和 .wxs运行机制有关
-    //["2018年", "2017年"], ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"], ["1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日", "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日", "28日", "29日", "30日", "31日"], ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23"]
-    date: []
+    // 这里是一些组件内部数据  通过 recentTime 和 beginTime 换算出 dateIndex
+    dateIndex: [0, 0, 0, 0, 0,0]
   },
   methods: {
     /**
@@ -36,7 +34,23 @@ Component({
       this.setData({
         dateIndex: e.detail.value
       })
+      var _beginTime=this.data.beginTime,
+        _dateIndex = this.data.dateIndex;
+      var _arr=[
+          _beginTime[0] + _dateIndex[0],
+          _dateIndex[1] + 1,
+          _dateIndex[2] + 1,
+          _dateIndex[3],
+          _dateIndex[4]
+        ];
+      console.log(_arr)
+      this.setData({
+        recentTime: _arr
+      })
+      //传递给组件外使用
+      this.triggerEvent('datechange', _arr)
     },
+    
     /**
        * 出生日期 年月日 三级联动 
        */
@@ -63,29 +77,42 @@ Component({
         data.dateIndex[2] = 0;
       }
       this.setData(data);
+
+      
     },
 
     /**
      * eg:this.buildArr(1990,2018,"年")
      */
-    buildArr: function (star, end, company) {
+    buildArr: function (_star, _end, company) {
       var arr = [];
+      var end = Math.max(_star, _end),
+          star=Math.min(_star,_end);
       for (var i = star; i <= end; i++) {
         arr.push(i + company)
       }
       return arr;
     },
     /**
-     * 初始化 date 日期时间二维数组 100年
+     * 初始化 date 日期时间二维数组
      */
     makeDate: function () {
       var arr = [], _date = new Date(),
-        now_year = _date.getFullYear();
+          param=this.data.parm,
+          beginTime=this.data.beginTime,
+          endTime=this.data.endTime;
+      // for(var i=0,len=param.length;i<len;i++){
+      //   if(!param[i]){
+
+      //   }
+      // }
       arr.push(
-        this.buildArr(now_year - 100, now_year, "年"),
-        this.buildArr(1, 12, "月"),
+        this.buildArr( beginTime[0], endTime[0] , "年"),
+        this.buildArr(1 ,12, "月"),
         this.buildArr(1, 31, "日"),
-        this.buildArr(0, 23, "")
+        this.buildArr(0, 23, "时"),
+        this.buildArr(0, 59, "分"),
+        this.buildArr(0, 59, "秒")
       )
       // console.log(arr)
       return arr;
@@ -134,8 +161,6 @@ Component({
       }
       return data;
     }
-    
-    
   },
   
 
@@ -151,12 +176,22 @@ Component({
    * 生命周期函数--在组件实例进入页面节点树时执行
    */
   attached: function () {
-    var that = this;
+    var that = this, _beginTime, _recentTime;
+    //dateIndex 需做处理 微信value 每一项的值表示选择了 range 对应项中的第几个（下标从 0 开始）
+    _beginTime = this.data.beginTime, //[1991,3,2,3,4]    1991年3月2日 3时4分
+    _recentTime = this.data.recentTime;// [1992,5,3,14,20]  1992年5月3日 14时20分 需要转换成 [1, 4, 2, 14, 20]
+    var arr=[
+      _recentTime[0]-  _beginTime[0],
+      _recentTime[1]-1,
+      _recentTime[2]-1,
+      _recentTime[3],
+      _recentTime[4]
+    ]
+    
     this.setData({
       date: that.makeDate(),
-      dateIndex:that.data.dateIndex
+      dateIndex: arr
     })
-    console.log(this.data.date)
     console.log(this.data.dateIndex)
   },
 

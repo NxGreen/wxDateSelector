@@ -1,12 +1,7 @@
 
 
 <!-- 这是自定义组件的内部WXML结构 -->
-<wxs src="./date-selector.wxs" module="ca" />
-
 <picker mode="multiSelector"  bindchange="bindDateChange" bindcolumnchange="bindDateColumnChange"  value="{{dateIndex}}" name="date" range="{{date}}"   >
-  <view class="picker">
-      {{ca.DateHandle(date,dateIndex)}}     
-  </view>
+  <slot></slot>
 </picker>
 
-<slot></slot>

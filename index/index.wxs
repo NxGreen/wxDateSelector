@@ -1,0 +1,26 @@
+
+var strHandle = function (arr) {
+  console.log("strHandle:" + arr)
+  if (!arr){
+    return "";
+  }
+  var str="";
+  // return arr[0]+"年"+ arr[1]+"月"+arr[2]+"日"+arr[3]+"时"+arr[4]+"分"+arr[5]+"秒";
+  return arr[0] + "-" + changeTime(arr[1]) + "-" + changeTime(arr[2]) + " " + changeTime(arr[3],true);
+}
+
+var changeTime = function (str, h) {
+  if (!str) {
+    str = "";
+  }
+  str+="";
+  if (str && str.length == 1) {
+    str = "0" + str
+  }
+  h ? (str += ":00") : str;
+  return str;
+}
+
+module.exports = {
+  strHandle: strHandle
+}

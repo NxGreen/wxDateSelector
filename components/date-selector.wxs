@@ -25,14 +25,16 @@ var DateHandle = function (_date, _dateIndex) {
     // for(var i=0;i<len;i++){
     //   var _a = parseInt(_dateIndex[i]);
     //   console.log(_date[i][_a])
-    //   str += _date[i][_a].slice(0, -1);
+    //   str += _date[i][_a];
     // }
     // return str;
     var _y = parseInt(_dateIndex[0]),
       _m = parseInt(_dateIndex[1]),
       _d = parseInt(_dateIndex[2]),
-      _h = parseInt(_dateIndex[3]);
-    return _date[0][_y].slice(0, -1) + "-" + changeTime(_date[1][_m].slice(0, -1)) + "-" + changeTime(_date[2][_d].slice(0, -1)) + " " + changeTime(_date[3][_h], true)
+      _h = parseInt(_dateIndex[3]),
+      _min = parseInt(_dateIndex[4]),
+      _s = parseInt(_dateIndex[5]);
+    return _date[0][_y] + "-" + _date[1][_m] + "-" + _date[2][_d] + " " + _date[3][_h]
   }
   return;
 }

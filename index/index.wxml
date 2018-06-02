@@ -1,3 +1,4 @@
+<wxs src="./index.wxs" module="ca" />
 
 <view class='form-item clear'>
   <view class='item-lab'>出生日期</view>
@@ -8,8 +9,12 @@
         param="{{param}}"
         beginTime="{{beginTime}}"
         endTime="{{endTime}}"
-        dateIndex="{{dateIndex}}"
+        recentTime="{{recentTime}}"
+        bind:datechange="datechange"
     >
+      <view class="picker">
+          {{ca.strHandle(recentTime)}}
+      </view>
     </date-selector>
   </view>
 </view>
