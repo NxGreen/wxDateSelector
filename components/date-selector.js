@@ -1,29 +1,25 @@
 Component({
   properties: {
-    //eg:[0, 1, 1, 1, 1] 设置单位，元素分别对应设置['year', 'month', 'day', 'hour', 'minute'], 1为需要，0为不需要, 需要为连续的1
-    param: {
-      type: Array,
-      value: [1, 1, 1, 1, 1, 1]
-    },
-    //eg:[3,27,12,12] 3月27日12点12分 设置开始时间点,空数组默认设置成1900年1月1日0时0分开始，数组的值对应param参数的对应值。
+    //eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
     beginTime: {
       type: Array,
       value: [1900, 1, 1, 0, 0, 0]
     },
-    //设置结束时间点, 空数组默认设置成次年12月31日23时59分结束，数组的值对应param参数的对应值
+    //设置结束时间点, 
     endTime: {
       type: Array,
       value: [1, 1, 1, 1, 1, 1]
     },
-    //设置当前时间点,空数组默认设置为系统当前时间，数组的值对应param参数的对应值。
+    //设置当前时间点,
     recentTime: {
       type: Array,
       value: [0, 0, 0, 0, 0, 0]
     }
   },
   data: {
-    // 这里是一些组件内部数据  通过 recentTime 和 beginTime 换算出 dateIndex
-    dateIndex: [0, 0, 0, 0, 0, 0]
+    // 这里是一些组件内部数据 
+    dateIndex: [0, 0, 0, 0, 0, 0],
+    date: []
   },
   methods: {
     /**
@@ -31,59 +27,45 @@ Component({
     */
     bindDateChange: function (e) {
       console.log('picker发送选择改变，携带值为', e.detail.value)
-      this.setData({
-        dateIndex: e.detail.value
-      })
       var _beginTime = this.data.beginTime,
+        _recentTime = this.data.recentTime,
         _dateIndex = this.data.dateIndex;
-      var _arr = [
-        _beginTime[0] + _dateIndex[0],
-        _dateIndex[1] + 1,
-        _dateIndex[2] + 1,
-        _dateIndex[3],
-        _dateIndex[4]
-      ];
-      console.log(_arr)
+      console.log(_recentTime)
       this.setData({
-        recentTime: _arr
+        recentTime: _recentTime
       })
       //传递给组件外使用
-      this.triggerEvent('datechange', _arr)
+      this.triggerEvent('datechange', _recentTime)
     },
 
     /**
-       * 出生日期 年月日 三级联动 
-       */
+     * 出生日期 年月日 三级联动 
+     */
     bindDateColumnChange: function (e) {
       console.log('修改的列为', e.detail.column, '，值的下标为', e.detail.value);
       var _column = e.detail.column,
         _value = e.detail.value,
-        _year = '',_beginTime=this.data.beginTime,_endTime=this.data.endTime,
-        that = this;
-      var data = {
-        date: this.data.date,
-        dateIndex: this.data.dateIndex
-      };
-      data.dateIndex[_column] = _value;
+        _beginTime = this.data.beginTime,
+        _endTime = this.data.endTime,
+        _recentTime = this.data.recentTime;
 
-      if (_column == 0) {  // 年份的变化 
-        _year = data.date[0][_value].slice(0, -1);
-        data = that.yearSetDate(data, _year);
-        // if(_year==_beginTime[0]){
-          
-        // }else if(_year==_endTime[0]){
-        //   _endTime[1]
-        // }
-        data.dateIndex[1] = 0;
-        data.dateIndex[2] = 0;
-      } else if (_column == 1) {  //月份的变化 
-        _year = data.dateIndex[0] + parseInt(data.date[0][0].slice(0, -1));
-        data = that.yearSetDate(data, _year);
-        data.dateIndex[2] = 0;
-      }
-      this.setData(data);
+      var _curRV = this.data.dateIndex[_column];//变化前 recentTime 下标
+      var dir = _value - _curRV;// 方向 >0 向下； <0 向上 
 
+      _recentTime[_column] = _recentTime[_column] + dir;
 
+      var bt = new Date(_beginTime[0], _beginTime[1], _beginTime[2], _beginTime[3], _beginTime[4]).getTime();
+      var et = new Date(_endTime[0], _endTime[1], _endTime[2], _endTime[3], _endTime[4]).getTime();
+      var rt = new Date(_recentTime[0], _recentTime[1], _recentTime[2], _recentTime[3], _recentTime[4]).getTime();
+      rt < bt ? (_recentTime = _beginTime) : "";
+      rt > et ? (_recentTime = _endTime) : "";
+
+      var _data = this.makeDate(_recentTime);
+      this.setData({
+        date: _data.date,
+        dateIndex: _data.dateIndex,
+        recentTime: _recentTime
+      })
     },
 
     /**
@@ -98,26 +80,86 @@ Component({
       }
       return arr;
     },
+    loop: function (begin, length, fuc) {
+      for (var i = begin; i < length; i++) {
+        if (fuc(i)) break;
+      }
+    },
+    checkTimeArr: function (arr1, arr2, length) {
+      var checkStatus = true;
+      this.loop(0, length, function (i) {
+        if (arr1[i] != arr2[i]) checkStatus = false;
+      });
+      return checkStatus;
+    },
+    checkRang: function (min, max, cur) {
+      if (min <= cur && max >= cur) {
+        return cur;
+      } else {
+        return (cur - min < cur - max) ? min : max;
+      }
+    },
+
     /**
      * 初始化 date 日期时间二维数组
      */
-    makeDate: function () {
-      var arr = [], _date = new Date(),
-        param = this.data.parm,
+    makeDate: function (recentTime) {
+      var arr = [], _date = new Date(), that = this,
         beginTime = this.data.beginTime,
-        recentTime = this.data.recentTime,
-        endTime = this.data.endTime;
-      
-      arr.push(
-        this.buildArr(beginTime[0], endTime[0], "年"),
-        this.buildArr(1, 12, "月"),
-        this.buildArr(1, 31, "日"),
-        this.buildArr(0, 23, "时"),
-        this.buildArr(0, 59, "分"),
-        this.buildArr(0, 59, "秒")
-      )
-      // console.log(arr)
-      return arr;
+        recentTime = recentTime ? recentTime : this.data.recentTime,
+        endTime = this.data.endTime,
+        dateIndex = [];
+      this.loop(0, beginTime.length, function (i) {
+        var min = 0, max = 0, cur = 0;
+        switch (i) {
+          case 0:
+            arr.push(that.buildArr(beginTime[i], endTime[i], "年"));
+            dateIndex[i] = recentTime[i] - beginTime[i];
+            break;
+          case 1:
+            min = that.checkTimeArr(beginTime, recentTime, 1) ? beginTime[i] : 1;
+            max = that.checkTimeArr(endTime, recentTime, 1) ? endTime[i] : 12;
+            // console.log(min+":"+max);
+            dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 1) ? recentTime[i] - beginTime[i] : recentTime[i] - 1;
+            arr.push(that.buildArr(min, max, "月"))
+            break;
+          case 2:
+            min = that.checkTimeArr(beginTime, recentTime, 2) ? beginTime[i] : 1;
+            max = that.checkTimeArr(endTime, recentTime, 2) ? endTime[i] : new Date(recentTime[0], recentTime[1], 0).getDate();
+            // console.log(min + ":" + max);
+            dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 2) ? recentTime[i] - beginTime[i] : recentTime[i] - 1;
+            arr.push(that.buildArr(min, max, "日"))
+            break;
+          case 3:
+            min = that.checkTimeArr(beginTime, recentTime, 3) ? beginTime[i] : 0;
+            max = that.checkTimeArr(endTime, recentTime, 3) ? endTime[i] : 23;
+            // console.log(min + ":" + max);
+            dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 3) ? recentTime[i] - beginTime[i] : recentTime[i];
+            arr.push(that.buildArr(min, max, "时"))
+            break;
+          case 4:
+            min = that.checkTimeArr(beginTime, recentTime, 4) ? beginTime[i] : 0;
+            max = that.checkTimeArr(endTime, recentTime, 4) ? endTime[i] : 59;
+            // console.log(min + ":" + max);
+            dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 4) ? recentTime[i] - beginTime[i] : recentTime[i];
+            arr.push(that.buildArr(min, max, "分"))
+            break;
+          case 5:
+            min = that.checkTimeArr(beginTime, recentTime, 5) ? beginTime[i] : 0;
+            max = that.checkTimeArr(endTime, recentTime, 5) ? endTime[i] : 59;
+            // console.log(min + ":" + max);
+            dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 5) ? recentTime[i] - beginTime[i] : recentTime[i];
+            arr.push(that.buildArr(min, max, "秒"))
+            break;
+        }
+      })
+      console.log(dateIndex)
+      console.log(recentTime)
+      return {
+        date: arr,
+        dateIndex: dateIndex,
+        recentTime: recentTime
+      };
     },
     /**
        * 判断指定年份是否为闰年
@@ -125,44 +167,8 @@ Component({
     isleap: function (_year) {
       var isleap = _year % 4 == 0 && _year % 100 != 0 || _year % 400 == 0;
       return isleap;
-    },
-    /**
-     * 根据年月份 设置 天数日期。
-     */
-    yearSetDate: function (data, _year) {
-      var that = this;
-      var nowDate = new Date(),
-        now_year = nowDate.getFullYear(),
-        now_month = nowDate.getMonth() + 1,
-        now_Date = nowDate.getDate(),
-        now_hours = nowDate.getHours();
-      //根据年份、月份 处理 天数变化
-      // console.log("年份" + _year +  "处理日期" + data.dateIndex[1])
-      switch (data.dateIndex[1]) {
-        case 0: case 2: case 4: case 6: case 7: case 9: case 11: //1,3,5,7,8,10,12月份 31天
-          data.date[2] = that.buildArr(1, 31, "日");
-          break;
-        case 3: case 5: case 8: case 10: //4,6,9,11 月份 30天
-          data.date[2] = that.buildArr(1, 30, "日");
-          break;
-        case 1: //2月份 闰年29天  平年28天 区分
-          // console.log("是否是闰年：" + that.isleap(_year))
-          if (that.isleap(_year)) {
-            data.date[2] = that.buildArr(1, 29, "日");
-          } else {
-            data.date[2] = that.buildArr(1, 28, "日");
-          }
-        default:
-      }
-      //当前年份时 -月份数，日期不得超过当前时间
-      if (_year == now_year) {
-        data.date[1] = that.buildArr(1, now_month, "月");
-        data.date[2] = that.buildArr(1, now_Date, "日");
-      } else {
-        data.date[1] = that.buildArr(1, 12, "月");
-      }
-      return data;
     }
+
   },
 
 
@@ -179,22 +185,12 @@ Component({
    */
   attached: function () {
     var that = this, _beginTime, _recentTime;
-    //dateIndex 需做处理 微信value 每一项的值表示选择了 range 对应项中的第几个（下标从 0 开始）
-    _beginTime = this.data.beginTime, //[1991,3,2,3,4]    1991年3月2日 3时4分
-      _recentTime = this.data.recentTime;// [1992,5,3,14,20]  1992年5月3日 14时20分 需要转换成 [1, 4, 2, 14, 20]
-    var arr = [
-      _recentTime[0] - _beginTime[0],
-      _recentTime[1] - 1,
-      _recentTime[2] - 1,
-      _recentTime[3],
-      _recentTime[4]
-    ]
-
+    var _data = this.makeDate(0);
     this.setData({
-      date: that.makeDate(),
-      dateIndex: arr
+      date: _data.date,
+      dateIndex: _data.dateIndex
     })
-    console.log(this.data.dateIndex)
+    console.log(this.data.date)
   },
 
   /**

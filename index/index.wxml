@@ -1,15 +1,15 @@
 <wxs src="./index.wxs" module="ca" />
 <view class="form-item clear">
-  <view class="item-lab">出生日期</view>
+  <view class="item-lab">日期</view>
   <view class="item-inp">
-    <!-- <text class='plac' hidden='{{ca.isHidden(dateIndex[0])}}' >请选择出生日期</text> -->
-    <date-selector id="dateSelector" param="{{param}}" beginTime="{{beginTime}}" endTime="{{endTime}}" recentTime="{{recentTime}}" bind:datechange="datechange">
+    <date-selector id="dateSelector"  beginTime="{{beginTime}}" endTime="{{endTime}}" recentTime="{{recentTime}}" bind:datechange="datechange">
       <view class="picker">{{ca.strHandle(recentTime)}}</view>
     </date-selector>
   </view>
 </view>
-<!-- param	{Array}	eg:[0, 1, 1, 1, 1]	设置单位，元素分别对应设置['year','month','day','hour','minute'],1为需要，0为不需要,需要为连续的1
-beginTime	{Array}	eg:[3,27,12,12] 3月27日12点12分	设置开始时间点,空数组默认设置成1970年1月1日0时0分开始，数组的值对应param参数的对应值。
-endTime	{Array}	同beginTime	设置结束时间点,空数组默认设置成次年12月31日23时59分结束，数组的值对应param参数的对应值。
-recentTime	{Array}	同beginTime	设置当前时间点,空数组默认设置为系统当前时间，数组的值对应param参数的对应值。
-success	{function}	function(arr1, arr2){alert(arr2)}	function(arr){} 回调函数，可以自定义结果格式化, arr1为数字结果, arr2为字符串结果 -->
+<!--
+beginTime	{Array}	eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
+endTime	{Array}	同beginTime	设置结束时间点
+recentTime	{Array}	同beginTime	设置当前时间点
+datechange 数据变化时处理函数，可以用来处理显示时间格式。
+-->
