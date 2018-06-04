@@ -2,7 +2,7 @@
 <view class="form-item clear">
   <view class="item-lab">日期</view>
   <view class="item-inp">
-    <date-selector id="dateSelector"  beginTime="{{beginTime}}" endTime="{{endTime}}" recentTime="{{recentTime}}" bind:datechange="datechange">
+    <date-selector id="dateSelector"  beginTime="{{beginTime}}" endTime="{{endTime}}" recentTime="{{recentTime}}"  bind:datechange="datechange">
       <view class="picker">{{ca.strHandle(recentTime)}}</view>
     </date-selector>
   </view>

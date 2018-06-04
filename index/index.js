@@ -5,7 +5,7 @@ Page({
     endTime: [2019, 2, 2, 2, 2, 2]
   },
   datechange: function (e) {
-    console.log(e.detail)
+    // console.log(e.detail)
     this.setData({
       recentTime: e.detail
     })

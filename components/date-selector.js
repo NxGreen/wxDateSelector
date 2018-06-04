@@ -26,11 +26,11 @@ Component({
     * 出生日期  change 事件（点击确定后）
     */
     bindDateChange: function (e) {
-      console.log('picker发送选择改变，携带值为', e.detail.value)
+      // console.log('picker发送选择改变，携带值为', e.detail.value)
       var _beginTime = this.data.beginTime,
         _recentTime = this.data.recentTime,
         _dateIndex = this.data.dateIndex;
-      console.log(_recentTime)
+      // console.log(_recentTime)
       this.setData({
         recentTime: _recentTime
       })
@@ -42,7 +42,7 @@ Component({
      * 出生日期 年月日 三级联动 
      */
     bindDateColumnChange: function (e) {
-      console.log('修改的列为', e.detail.column, '，值的下标为', e.detail.value);
+      // console.log('修改的列为', e.detail.column, '，值的下标为', e.detail.value);
       var _column = e.detail.column,
         _value = e.detail.value,
         _beginTime = this.data.beginTime,
@@ -66,6 +66,7 @@ Component({
         dateIndex: _data.dateIndex,
         recentTime: _recentTime
       })
+      this.triggerEvent('datechange', _recentTime)
     },
 
     /**
@@ -153,8 +154,8 @@ Component({
             break;
         }
       })
-      console.log(dateIndex)
-      console.log(recentTime)
+      // console.log(dateIndex)
+      // console.log(recentTime)
       return {
         date: arr,
         dateIndex: dateIndex,
@@ -190,7 +191,7 @@ Component({
       date: _data.date,
       dateIndex: _data.dateIndex
     })
-    console.log(this.data.date)
+    // console.log(this.data.date)
   },
 
   /**
