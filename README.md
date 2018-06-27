@@ -55,7 +55,7 @@ Page({
 | -----| -----| -----| -----|
 |  **beginTime**   |  {Array} |*eg:[2000, 1, 1, 0, 0, 0]    2000年1月1日0时0分0秒*| 设置开始时间点 |
 |  **endTime** |  {Array} |同beginTime| 设置结束时间点 |
-|  **selectTime**  |  {Array|String} |同beginTime| 设置选中时间点，当为string时，为占位符显示的文字描述 eg:'请选择时间'， |
+|  **selectTime**  |  {Array,String} |为数组时,为当前选中时间;为string时,为占位符提示| 设置选中时间点，当为string时，为占位符显示的文字描述 eg:'请选择时间'， |
 |  **defSelectTime**  |  {Array} |同beginTime| 设置默认选中时间点（当有占位符显示时，可以设置一个默认选中时间） |
 
 
