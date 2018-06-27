@@ -1,12 +1,13 @@
 <wxs src="./index.wxs" module="ca" />
 <view class="form-item clear">
-  <view class="item-lab">日期</view>
+  <view class="item-lab">出生日期</view>
   <view class="item-inp">
-    <date-selector id="dateSelector"  beginTime="{{beginTime}}" endTime="{{endTime}}" recentTime="{{recentTime}}"  bind:datechange="datechange">
-      <view class="picker">{{ca.strHandle(recentTime)}}</view>
+    <date-selector class="active" id="dateSelector" selectTime="{{selectTime}}"  bind:datechange="datechange">
+      <view class="picker">{{ca.strHandle(selectTime)}}</view>
     </date-selector>
   </view>
 </view>
+
 <!--
 beginTime	{Array}	eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
 endTime	{Array}	同beginTime	设置结束时间点

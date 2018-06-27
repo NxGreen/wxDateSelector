@@ -7,11 +7,11 @@
 		"urlCheck": true,
 		"es6": true,
 		"postcss": true,
-		"minified": true,
+		"minified": false,
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.0",
+	"libVersion": "2.1.1",
 	"appid": "wxa3c59f784e387d85",
 	"projectname": "wxDateSelector",
 	"condition": {

@@ -1,19 +1,19 @@
-
-var strHandle = function (arr) {
+var strHandle = function(arr) {
+  console.log(arr)
+  if (typeof arr == 'string') {
+    return arr;
+  }
   console.log(arr)
   var str = "";
   if (!arr) {
     return "";
-  }else{
-     str=arr[0] + "-" + changeTime(arr[1]) + "-" + changeTime(arr[2]) + " " + changeTime(arr[3]) + ":" + changeTime(arr[4]) + ":" + changeTime(arr[5]);
+  } else {
+    str = arr[0] + "-" + changeTime(arr[1]) + "-" + changeTime(arr[2]) + " " + changeTime(arr[3]) + ":" + changeTime(arr[4]) + ":" + changeTime(arr[5]);
   }
   return str;
 }
 
-var changeTime = function (str) {
-  if (!str) {
-    str = "";
-  }
+var changeTime = function(str) {
   str += "";
   if (str && str.length == 1) {
     str = "0" + str

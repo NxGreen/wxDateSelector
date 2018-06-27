@@ -1,4 +1,4 @@
 <!-- 这是自定义组件的内部WXML结构 -->
-<picker mode="multiSelector" bindchange="bindDateChange" bindcolumnchange="bindDateColumnChange" value="{{dateIndex}}" name="date" range="{{date}}">
+<picker class='picker {{placeholderShow?"":"active"}}' mode="multiSelector" bindchange="bindDateChange" bindcolumnchange="bindDateColumnChange" value="{{dateIndex}}" name="date" range="{{date}}">
   <slot></slot>
 </picker>

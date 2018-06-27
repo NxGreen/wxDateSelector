@@ -26,3 +26,5 @@
 .item-inp .plac{
   position: absolute; font-size: 36rpx; color:rgba(255,255,255,.3);pointer-events:none;
 }
+
+.active{ color:#333}

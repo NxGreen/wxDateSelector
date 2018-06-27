@@ -1,13 +1,11 @@
 Page({
   data: {
-    beginTime: [2000, 1, 1, 0, 0, 0],
-    recentTime: [2016, 10,10, 10, 10,10],
-    endTime: [2019, 2, 2, 2, 2, 2]
+    selectTime: '请选择出生日期'
   },
-  datechange: function (e) {
+  datechange: function(e) {
     // console.log(e.detail)
     this.setData({
-      recentTime: e.detail
+      selectTime: e.detail
     })
   }
 })
