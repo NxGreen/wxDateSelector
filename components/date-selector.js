@@ -3,29 +3,34 @@ Component({
     //eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
     beginTime: {
       type: Array,
-      value: [1949, 10, 1, 0, 0, 0]
+      value: [1949, 10, 1, 0]
     },
     //设置结束时间点, 
     endTime: {
       type: Array,
-      value: [2019, 10, 1, 0, 0, 0]
+      value: [2019, 10, 1, 0]
     },
     defSelectTime: {
       // 默认选中时间
       type: Array,
-      value: [1990, 6, 16, 0, 0, 0]
+      value: [1990, 6, 16, 0]
     },
     //设置当前时间点,
     selectTime: {
       type: null,
-      value: [1990, 6, 16, 0, 0, 0]
+      value: [1990, 6, 16, 0]
+    },
+    isUnclear: {
+      // 是否显示小时 不清楚选项
+      type: Boolean,
+      value: false
     }
   },
   data: {
     // 这里是一些组件内部数据 
-    dateIndex: [1, 1, 1, 1, 1, 1],
+    dateIndex: [1, 1, 1, 1],
     date: [], // 时间数据
-    recentTime: [1990, 6, 16, 0, 0, 0], // 存储选中时间 对应 properties-selectTime
+    recentTime: [1990, 6, 16, 0], // 存储选中时间 对应 properties-selectTime
     placeholderShow: true, // 默认显示 占位符
     placeholder: '公历年月日小时'
   },
@@ -82,12 +87,15 @@ Component({
     /**
      * eg:this.buildArr(1990,2018,"年")
      */
-    buildArr: function(_star, _end, company) {
+    buildArr: function(_star, _end, company, _isUnclear) {
       var arr = [];
       var end = Math.max(_star, _end),
         star = Math.min(_star, _end);
       for (var i = star; i <= end; i++) {
         arr.push(i + company)
+      }
+      if (_isUnclear) {
+        arr.unshift('不清楚')
       }
       return arr;
     },
@@ -150,7 +158,7 @@ Component({
             max = that.checkTimeArr(endTime, recentTime, 3) ? endTime[i] : 23;
             // console.log(min + ":" + max);
             dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 3) ? recentTime[i] - beginTime[i] : recentTime[i];
-            arr.push(that.buildArr(min, max, "时"))
+            arr.push(that.buildArr(min, max, "时", that.data.isUnclear))
             break;
           case 4:
             min = that.checkTimeArr(beginTime, recentTime, 4) ? beginTime[i] : 0;
@@ -177,24 +185,25 @@ Component({
       };
     },
     init: function() {
-      console.log(this.data)
-      var _recentTime, _placeholder = this.data.placeholder
+      var _recentTime, _placeholder = this.data.placeholder,
+        _placeholderShow = this.data.placeholderShow
       if (typeof this.data.selectTime == 'string') { //占位符
         _recentTime = this.data.defSelectTime.concat()
         _placeholder = this.data.selectTime
       } else { // 有默认选中项
         _recentTime = this.data.selectTime.concat()
-        this.data.placeholderShow = false
+        _placeholderShow = false
       }
 
       this.setData({
         recentTime: _recentTime,
-        placeholder: _placeholder
+        placeholder: _placeholder,
+        placeholderShow: _placeholderShow
       })
 
-      console.log(_recentTime)
+      // console.log(_recentTime)
       var _data = this.makeDate(_recentTime)
-      console.log(_data)
+      // console.log(_data)
       this.setData({
         date: _data.date,
         dateIndex: _data.dateIndex,

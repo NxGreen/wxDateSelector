@@ -1,14 +1,12 @@
 var strHandle = function(arr) {
-  console.log(arr)
   if (typeof arr == 'string') {
     return arr;
   }
-  console.log(arr)
-  var str = "";
+  var str = ""
   if (!arr) {
     return "";
   } else {
-    str = arr[0] + "-" + changeTime(arr[1]) + "-" + changeTime(arr[2]) + " " + changeTime(arr[3]) + ":" + changeTime(arr[4]) + ":" + changeTime(arr[5]);
+    str = arr[0] + "-" + changeTime(arr[1]) + "-" + changeTime(arr[2]) + " " + (arr[3] ? changeTime(arr[3] - 1) + ':00' : '不清楚');
   }
   return str;
 }

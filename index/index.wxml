@@ -2,7 +2,7 @@
 <view class="form-item clear">
   <view class="item-lab">出生日期</view>
   <view class="item-inp">
-    <date-selector class="active" id="dateSelector" selectTime="{{selectTime}}"  bind:datechange="datechange">
+    <date-selector class="active" id="dateSelector" isUnclear='{{isUnclear}}' selectTime="{{selectTime}}"  bind:datechange="datechange">
       <view class="picker">{{ca.strHandle(selectTime)}}</view>
     </date-selector>
   </view>
@@ -11,6 +11,6 @@
 <!--
 beginTime	{Array}	eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
 endTime	{Array}	同beginTime	设置结束时间点
-recentTime	{Array}	同beginTime	设置当前时间点
+selectTime	{Array}	同beginTime	设置当前时间点
 datechange 数据变化时处理函数，可以用来处理显示时间格式。
 -->
