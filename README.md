@@ -1,6 +1,8 @@
 # wxDateSelector
 wxDateSelector是用于微信小程序的一个日期选择器插件。鉴于目前微信小程序自带的日期选择器只能支持 年月日 或者 时分 的选择。并且不能设定时间的起止筛选而开发的微信小程序自定义组件，方便项目中快捷使用。
 
+如果需要mpvue 时间选择插件 请移步 [mpvue-dateselector](https://github.com/NxGreen/mpvue-dateselector) 
+
 
 ----------
 
