@@ -28,7 +28,7 @@ Component({
   },
   data: {
     // 这里是一些组件内部数据 
-    dateIndex: [1, 1, 1, 1],
+    dateIndex: [1, 1, 1, 1, 1, 1],
     date: [], // 时间数据
     recentTime: [1990, 6, 16, 0], // 存储选中时间 对应 properties-selectTime
     placeholderShow: true, // 默认显示 占位符

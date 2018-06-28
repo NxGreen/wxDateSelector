@@ -1,5 +1,8 @@
+
 # wxDateSelector
 wxDateSelector是用于微信小程序的一个日期选择器插件。鉴于目前微信小程序自带的日期选择器只能支持 年月日 或者 时分 的选择。并且不能设定时间的起止筛选而开发的微信小程序自定义组件，方便项目中快捷使用。
+
+如果需要mpvue 时间选择插件 请移步 [mpvue-dateselector](https://github.com/NxGreen/mpvue-dateselector) 
 
 
 ----------
@@ -54,10 +57,11 @@ Page({
 | 参数 | 字符类型  |  取值  | 说明 | 
 | -----| -----| -----| -----|
 |  **beginTime**   |  {Array} |*eg:[2000, 1, 1, 0, 0, 0]    2000年1月1日0时0分0秒*| 设置开始时间点 |
-|  **endTime** |  {Array} |同beginTime| 设置结束时间点 |
+|  **endTime** |  {Array} |同beginTime| 设置结束时间点 请确保beginTime、endTime、selectTime、defSelectTime 数组长度一样 |
 |  **selectTime**  |  {Array,String} |为数组时,为当前选中时间;为string时,为占位符提示| 设置选中时间点，当为string时，为占位符显示的文字描述 eg:'请选择时间'， |
 |  **defSelectTime**  |  {Array} |同beginTime| 设置默认选中时间点（当有占位符显示时，可以设置一个默认选中时间） |
 
+tips:当设置selectTime为数组时，请确保beginTime、endTime、selectTime、defSelectTime 数组长度一样。即确保这4个参数精确到同样的小时、分、秒。
 
 ----------
 ### 其他
@@ -68,3 +72,4 @@ Page({
 
 
   [1]: https://github.com/AppianZ/multi-picker/tree/master/DateSelector
+
