@@ -3,7 +3,7 @@ Component({
     //eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
     beginTime: {
       type: Array,
-      value: [2015, 10, 2, 2]
+      value: [2015, 10, 2, 0]
     },
     //设置结束时间点, 默认为空数组时，自动设置为当天时间
     endTime: {
@@ -13,7 +13,7 @@ Component({
     defSelectTime: {
       // 默认选中时间
       type: Array,
-      value: [2017, 6, 6, 0]
+      value: [2017, 6, 6, -1]
     },
     //设置当前时间点,
     selectTime: {
@@ -73,6 +73,11 @@ Component({
 
       rt < this.data.bMillisecond ? (_recentTime = _beginTime.concat()) : "";
       rt > this.data.eMillisecond ? (_recentTime = _endTime.concat()) : "";
+      console.log(_recentTime)
+      if (this.data.isUnclear && _column == 3 && _value == 0) {
+        console.log(111)
+        _recentTime[_column] = -1
+      }
 
       var _data = this.makeDate(_recentTime);
       this.setData({
@@ -123,6 +128,7 @@ Component({
      * 初始化 date 日期时间二维数组
      */
     makeDate: function(recentTime) {
+      // console.log('makeDate:' + recentTime)
       var arr = [],
         _date = new Date(),
         that = this,
@@ -156,8 +162,13 @@ Component({
           case 3:
             min = that.checkTimeArr(beginTime, recentTime, 3) ? beginTime[i] : 0;
             max = that.checkTimeArr(endTime, recentTime, 3) ? endTime[i] : 23;
-            // console.log(min + ":" + max);
             dateIndex[i] = that.checkTimeArr(beginTime, recentTime, 3) ? recentTime[i] - beginTime[i] : recentTime[i];
+            // 处理时间不清楚
+            if (that.data.isUnclear) {
+              dateIndex[i] += 1
+              dateIndex[i] = dateIndex[i] <= -1 ? 0 : dateIndex[i]
+            }
+            // console.log(beginTime, recentTime, endTime, min, max, dateIndex[i]);
             arr.push(that.buildArr(min, max, "时", that.data.isUnclear))
             break;
           case 4:
