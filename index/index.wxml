@@ -2,7 +2,7 @@
 <view class="form-item clear">
   <view class="item-lab">出生日期</view>
   <view class="item-inp">
-    <date-selector class="active" id="dateSelector" isUnclear='{{isUnclear}}' selectTime="{{selectTime}}"  bind:datechange="datechange">
+    <date-selector class="active" id="dateSelector"  selectTime="{{selectTime}}" bind:datechange="datechange">
       <view class="picker">{{ca.strHandle(selectTime)}}</view>
     </date-selector>
   </view>

@@ -3,17 +3,17 @@ Component({
     //eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
     beginTime: {
       type: Array,
-      value: [1949, 10, 1, 0]
+      value: [2015, 10, 2, 2]
     },
-    //设置结束时间点, 
+    //设置结束时间点, 默认为空数组时，自动设置为当天时间
     endTime: {
       type: Array,
-      value: [2019, 10, 1, 0]
+      value: []
     },
     defSelectTime: {
       // 默认选中时间
       type: Array,
-      value: [1990, 6, 16, 0]
+      value: [2017, 6, 6, 0]
     },
     //设置当前时间点,
     selectTime: {
@@ -21,9 +21,9 @@ Component({
       value: [1990, 6, 16, 0]
     },
     isUnclear: {
-      // 是否显示小时 不清楚选项
+      // 是否添加小时 不清楚 选项
       type: Boolean,
-      value: false
+      value: true
     }
   },
   data: {
@@ -31,8 +31,11 @@ Component({
     dateIndex: [1, 1, 1, 1, 1, 1],
     date: [], // 时间数据
     recentTime: [1990, 6, 16, 0], // 存储选中时间 对应 properties-selectTime
+    // endTime:[],
     placeholderShow: true, // 默认显示 占位符
-    placeholder: '公历年月日小时'
+    placeholder: '公历年月日小时',
+    bMillisecond: 0, //beginTime 的毫秒数
+    eMillisecond: 0 //endTime 的毫秒数
   },
   methods: {
     /**
@@ -62,17 +65,14 @@ Component({
         _beginTime = this.data.beginTime,
         _endTime = this.data.endTime,
         _recentTime = this.data.recentTime;
-
       var _curRV = this.data.dateIndex[_column]; //变化前 recentTime 下标
       var dir = _value - _curRV; // 方向 >0 向下； <0 向上 
-
       _recentTime[_column] = _recentTime[_column] + dir;
 
-      var bt = new Date(_beginTime[0], _beginTime[1], _beginTime[2], _beginTime[3], _beginTime[4]).getTime();
-      var et = new Date(_endTime[0], _endTime[1], _endTime[2], _endTime[3], _endTime[4]).getTime();
-      var rt = new Date(_recentTime[0], _recentTime[1], _recentTime[2], _recentTime[3], _recentTime[4]).getTime();
-      rt < bt ? (_recentTime = _beginTime) : "";
-      rt > et ? (_recentTime = _endTime) : "";
+      var rt = this.changMillisecond(_recentTime)
+
+      rt < this.data.bMillisecond ? (_recentTime = _beginTime.concat()) : "";
+      rt > this.data.eMillisecond ? (_recentTime = _endTime.concat()) : "";
 
       var _data = this.makeDate(_recentTime);
       this.setData({
@@ -184,8 +184,20 @@ Component({
         recentTime: recentTime
       };
     },
+    changMillisecond: function(arr) {
+      var tempArr = arr.concat();
+      for (var i = 0; i < 6; i++) {
+        if (!arr[i]) {
+          tempArr[i] = 0
+        } else {
+          tempArr[i] = arr[i]
+        }
+      }
+      return new Date(tempArr[0], tempArr[1] - 1, tempArr[2], tempArr[3], tempArr[4], tempArr[5]).getTime()
+    },
     init: function() {
-      var _recentTime, _placeholder = this.data.placeholder,
+      var _recentTime, _endTime = this.data.endTime,
+        _placeholder = this.data.placeholder,
         _placeholderShow = this.data.placeholderShow
       if (typeof this.data.selectTime == 'string') { //占位符
         _recentTime = this.data.defSelectTime.concat()
@@ -195,8 +207,18 @@ Component({
         _placeholderShow = false
       }
 
+      if (_endTime.length <= 0) {
+        var now = new Date()
+        var year = now.getFullYear()
+        var month = now.getMonth() + 1
+        var day = now.getDate()
+        var hours = now.getHours()
+        _endTime = [year, month, day, hours]
+      }
+
       this.setData({
         recentTime: _recentTime,
+        endTime: _endTime,
         placeholder: _placeholder,
         placeholderShow: _placeholderShow
       })
@@ -207,7 +229,9 @@ Component({
       this.setData({
         date: _data.date,
         dateIndex: _data.dateIndex,
-        recentTime: _data.recentTime
+        recentTime: _data.recentTime,
+        bMillisecond: this.changMillisecond(this.data.beginTime),
+        eMillisecond: this.changMillisecond(this.data.endTime)
       })
     }
   },
@@ -225,6 +249,7 @@ Component({
    * 生命周期函数--在组件实例进入页面节点树时执行
    */
   attached: function() {
+
     this.init()
     // console.log(this.data.date)
   },
