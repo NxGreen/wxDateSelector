@@ -3,7 +3,7 @@ Component({
     //eg:[1990,3,27,12,12,59] 1990年3月27日12点12分59秒	设置开始时间点
     beginTime: {
       type: Array,
-      value: [2015, 10, 2, 0]
+      value: [1949, 10, 1, 0]
     },
     //设置结束时间点, 默认为空数组时，自动设置为当天时间
     endTime: {
@@ -13,7 +13,7 @@ Component({
     defSelectTime: {
       // 默认选中时间
       type: Array,
-      value: [2017, 6, 6, -1]
+      value: [1990, 6, 16, 0]
     },
     //设置当前时间点,
     selectTime: {
@@ -24,11 +24,16 @@ Component({
       // 是否添加小时 不清楚 选项
       type: Boolean,
       value: true
+    },
+    // 组件样式 [0]为默认占位符样式 [1]为选中样式
+    color: {
+      type: Array,
+      value: ['#eee', '#333']
     }
   },
   data: {
     // 这里是一些组件内部数据 
-    dateIndex: [1, 1, 1, 1, 1, 1],
+    dateIndex: [1, 1, 1, 1],
     date: [], // 时间数据
     recentTime: [1990, 6, 16, 0], // 存储选中时间 对应 properties-selectTime
     // endTime:[],
@@ -43,16 +48,32 @@ Component({
      */
     bindDateChange: function(e) {
       // console.log('picker发送选择改变，携带值为', e.detail.value)
-      var _beginTime = this.data.beginTime,
-        _recentTime = this.data.recentTime,
-        _dateIndex = this.data.dateIndex;
-      // console.log(_recentTime)
-      this.setData({
-        recentTime: _recentTime,
-        placeholderShow: false
-      })
-      //传递给组件外使用
-      this.triggerEvent('datechange', _recentTime)
+
+      // 当快速滚动下拉框 再迅速点击确认后 会导致数据不更新
+      // 对比dateindex 和e.mp.detail.value 不同进行更新数据
+      let [_col, _val, isEqual, arr] = [0, 0, true, e.detail.value]
+      for (let i = 0; i < this.data.dateIndex.length; i++) {
+        let item = this.data.dateIndex[i]
+        if (item != arr[i]) {
+          _col = i
+          _val = arr[i]
+          isEqual = false
+          break
+        }
+      }
+
+      if (isEqual) {
+        var _recentTime = this.data.recentTime;
+        // console.log(_recentTime)
+        this.setData({
+          recentTime: _recentTime,
+          placeholderShow: false
+        })
+        //传递给组件外使用
+        this.triggerEvent('datechange', _recentTime)
+      } else {
+        this.update(_col, _val)
+      }
     },
 
     /**
@@ -60,9 +81,10 @@ Component({
      */
     bindDateColumnChange: function(e) {
       // console.log('修改的列为', e.detail.column, '，值的下标为', e.detail.value);
-      var _column = e.detail.column,
-        _value = e.detail.value,
-        _beginTime = this.data.beginTime,
+      this.update(e.detail.column, e.detail.value)
+    },
+    update: function(_column, _value) {
+      var _beginTime = this.data.beginTime,
         _endTime = this.data.endTime,
         _recentTime = this.data.recentTime;
       var _curRV = this.data.dateIndex[_column]; //变化前 recentTime 下标
@@ -73,9 +95,8 @@ Component({
 
       rt < this.data.bMillisecond ? (_recentTime = _beginTime.concat()) : "";
       rt > this.data.eMillisecond ? (_recentTime = _endTime.concat()) : "";
-      console.log(_recentTime)
+      // console.log(_recentTime)
       if (this.data.isUnclear && _column == 3 && _value == 0) {
-        console.log(111)
         _recentTime[_column] = -1
       }
 

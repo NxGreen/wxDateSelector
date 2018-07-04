@@ -1,6 +1,7 @@
 Page({
   data: {
-    selectTime: '请选择出生时间'
+    selectTime: [2016, 10, 2, 0],
+    color: ['#eee', '#fff']
   },
   datechange: function(e) {
     console.log('回调' + e.detail)

@@ -2,9 +2,9 @@
 
 .picker{
   display: flex; align-items: center; height: 130rpx; line-height: normal;flex-wrap: nowrap;
-  color:#eee
+  /* color:#eee */
 }
 
 .active{
-  color:#333;
+  /* color:#333; */
 }
