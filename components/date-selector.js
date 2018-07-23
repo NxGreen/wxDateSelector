@@ -18,7 +18,10 @@ Component({
     //设置当前时间点,
     selectTime: {
       type: null,
-      value: [1990, 6, 16, 0]
+      value: [1990, 6, 16, 0],
+      observer:function(){
+        this.init()
+      }
     },
     isUnclear: {
       // 是否添加小时 不清楚 选项
@@ -268,7 +271,7 @@ Component({
     }
   },
   onShow() {
-
+    console.log('show')
   },
 
 
@@ -281,7 +284,6 @@ Component({
    * 生命周期函数--在组件实例进入页面节点树时执行
    */
   attached: function() {
-
     this.init()
     // console.log(this.data.date)
   },
